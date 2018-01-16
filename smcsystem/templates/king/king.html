@@ -1,0 +1,27 @@
+{% load tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/static/bootstrap/bootstrap-3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/jquery-3.0.0.min.js"></script>
+    <script src="/static/bootstrap/bootstrap-3.3.7/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <div class="panel panel-primary container" style="padding: 0">
+
+        {% for app_name,v in table.items %}
+            <div class="panel-heading">{{ app_name }}</div>
+            <div class="panel-body">
+            {% for table_name,admin_class in v.items %}
+                    <a href="{% url 'table_obj' app_name table_name %}">{% table_cn_name admin_class %} </a>
+                    <hr style="margin-top: 10px;margin-bottom: 10px"/>
+            {% endfor %}
+            </div>
+        {% endfor %}
+
+    </div>
+</body>
+</html>

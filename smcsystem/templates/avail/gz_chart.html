@@ -1,0 +1,102 @@
+{% extends 'index_base.html' %}
+
+{% block css %}
+    <style>
+        h2{
+            color: #019858;
+        }
+        .stat h1:hover{
+             color: red;
+             cursor: pointer
+{#             background-color: crimson;#}
+         }
+
+    </style>
+{% endblock %}
+{% block body %}
+  <div class="main-inner container">
+      <div class="row">
+      {% if xm_list %}
+          <div class="col-md-6">
+              {% for i in left %}
+              <div class="widget">
+                  <div class="widget-content">
+                      <div id="{{ i.xmname }}" style="height: 400px"></div>
+                  </div>
+              </div>
+              {% endfor %}
+
+          </div>
+          <div class="col-md-6">
+              {% for i in right %}
+              <div class="widget">
+                  <div class="widget-content">
+                    <div id="{{ i.xmname }}" style="height: 400px"></div>
+                  </div>
+              </div>
+              {% endfor %}
+        </div>
+        {% else %}
+          <h2 style="text-align: center">目前没有故障</h2>
+        {% endif %}
+      </div>
+
+  </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function() {
+            {% for xm in xm_list %}
+            $.ajax({
+                url: '/avail/chart/gz_chart',
+                type: 'GET',
+                dataType:"json",
+                data: {'disk':true,'xmname':'{{ xm.xmname }}'},
+                success: function(data) {
+                    $('#{{ xm.xmname }}').highcharts({
+                            chart: {
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: false
+                            },
+                            title: {
+                                text: '{{ xm.xmname }} 所有故障占比'
+                            },
+                            tooltip: {
+                                headerFormat: '{series.name}<br>',
+                                pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.y} 次',
+                                        style: {
+                                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                        }
+                                    }
+                                }
+                            },
+                            series: [{
+                                type: 'pie',
+                                name: '故障占比',
+                                data: data.data_list
+                            }],
+                            credits:{
+                                text: 'bitnei',
+                                href: ''
+                            }
+                    })
+                }
+            });
+        {% endfor %}});
+
+
+
+    </script>
+
+{% endblock %}

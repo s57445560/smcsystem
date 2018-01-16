@@ -1,0 +1,600 @@
+{% extends 'index_base.html' %}
+
+{% block css %}
+    <style>
+        h2{
+            color: #019858;
+        }
+        .stat h1:hover{
+             color: red;
+             cursor: pointer
+{#             background-color: crimson;#}
+         }
+
+    </style>
+{% endblock %}
+{% block body %}
+  <div class="main-inner container">
+      <div class="row">
+          <div class="col-md-6">
+              <div class="widget widget-nopad">
+{#            <div class="widget-header"> <i class="icon-list-alt"></i>#}
+{#              <h3> 平台情况 </h3>#}
+{#            </div>#}
+            <div class="widget-content">
+              <div class="widget big-stats-container" style="margin-bottom: 0">
+                <div class="widget-content">
+                  <div id="big_stats" class="cf" style="margin-top: 5px;">
+                    <div class="stat" >  <h1>{{ wl_host_num }}</h1>
+                    <h2 style="cursor: pointer">物理机</h2></div>
+                    <div class="stat">  <h1>{{ vm_host_num }}</h1>
+                    <h2 style="cursor: pointer">虚拟机</h2></div>
+                    <div class="stat"> <h1>{{ group_host_num }}</h1>
+                    <h2 style="cursor: pointer">项目</h2></div>
+                      <div class="stat"> <h1>{{ code_host_num }}</h1>
+                    <h2 style="cursor: pointer">部署程序</h2></div>
+
+                  </div>
+                </div>
+                <!-- /widget-content -->
+
+              </div>
+            </div>
+          </div>
+              <div class="widget">
+                  <div class="widget-content">
+                      <div id="mem_chart" style="height: 400px"></div>
+                  </div>
+              </div>
+              <div class="widget">
+                  <div class="widget-content">
+                      <div id="s_chart_mem" style="height: 400px"></div>
+                  </div>
+              </div>
+              <div class="widget">
+                  <div class="widget-content">
+                      <div id="group_history" style="min-width:400px;height:400px"></div>
+                  </div>
+              </div>
+              <div class="widget">
+                  <div class="widget-content">
+                      <div id="car_num" style="height: 400px"></div>
+                  </div>
+              </div>
+
+          </div>
+          <div class="col-md-6">
+              <div class="widget widget-nopad">
+                    <div class="widget-content">
+                      <div class="widget big-stats-container" style="margin-bottom: 0">
+                        <div class="widget-content">
+                          <div id="big_stats" class="cf" style="margin-top: 5px">
+                              <div class="stat">  <h1>{{ sw_d }}</h1>
+                            <h2 style="cursor: pointer">网络设备</h2></div>
+                              <div class="stat">  <h1>{{ vm_d }}</h1>
+                            <h2 style="cursor: pointer">VM 物理机</h2></div>
+                            <div class="stat" > <h1>{{ up_d }}</h1>
+                            <h2 style="cursor: pointer">在线设备</h2></div>
+                            <div class="stat">  <h1>{{ down_d }}</h1>
+                            <h2 style="cursor: pointer">下线设备</h2></div>
+
+{#                            <div class="stat"> <i class="icon-cog"></i> <span class="value">{{ group_host_num }}</span>#}
+{#                            <h2>项目</h2></div>#}
+{#                              <div class="stat"> <i class="icon-sitemap" ></i> <span class="value">{{ code_host_num }}</span>#}
+{#                            <h2>程序</h2></div>#}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+              </div>
+              <div class="widget">
+                  <div class="widget-content">
+                    <div id="disk_chart" style="height: 400px"></div>
+                  </div>
+              </div>
+              <div class="widget">
+                  <div class="widget-content">
+                    <div id="s_chart" style="min-width:400px;height:400px"></div>
+                  </div>
+              </div>
+              <div class="widget">
+                  <div class="widget-content">
+                    <div id="app_chart" style="min-width:400px;height:400px"></div>
+                  </div>
+              </div>
+              <div class="widget">
+                  <div class="widget-content">
+                    <div id="cq_chart" style="min-width:400px;height:400px"></div>
+                  </div>
+              </div>
+
+        </div>
+
+      </div>
+
+  </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $("#a1").addClass("active");
+
+        $(function() {
+            $.ajax({
+                url: '/server/disk_chart',
+                type: 'GET',
+                dataType:"json",
+                data: {'disk':true },
+                success: function(data) {
+                    $('#disk_chart').highcharts({
+                        chart: {
+                            type: 'column',
+                            options3d: {
+                                enabled: true,
+                                alpha: 15,
+                                beta: 15,
+                                viewDistance: 25,
+                                depth: 40
+                            },
+                            marginTop: 40,
+                            marginRight: 20
+                        },
+                        title: {
+                            text: '项目磁盘使用情况'
+                        },
+                        plotOptions: {
+                            column: {
+                                depth: 40,
+                                stacking: true,
+                                grouping: false,
+                                groupZPadding: 10
+                            }
+                        },
+                        xAxis: {
+                            categories: data.xm_name
+                        },
+                        yAxis: {
+                            allowDecimals: false,
+                            min: 0,
+                            title: {
+                                text: '单位为G'
+                            }
+                        },
+                        series: [{
+                            name:'使用情况',
+                            data: data.disk_use,
+                            stack: 0
+                        }, {
+                            name:'总量',
+                            data: data.disk_all,
+                            stack: 1
+                        }],
+                        credits:{
+                            text: 'bitnei',
+                            href: ''
+                        }
+                    })
+                }
+            });
+
+            {#    三期平台专门的试图#}
+            $.ajax({
+                url: '/server/disk_chart',
+                type: 'GET',
+                dataType:"json",
+                data: {'data':"sanqi" },
+                success: function(data) {
+                    $('#s_chart').highcharts({
+                        chart: {
+                            type: 'column',
+                            options3d: {
+                                enabled: true,
+                                alpha: -5,
+                                beta: 35,
+                                viewDistance: 25,
+                                depth: 40
+                            },
+                            marginTop: 40,
+                            marginRight: 20
+                        },
+                        title: {
+                            text: '监管平台三期 磁盘使用情况'
+                        },
+                        xAxis: {
+                            categories: ['磁盘']
+                        },
+                        yAxis: {
+                            allowDecimals: false,
+                            min: 0,
+                            title: {
+                                text: '单位为 G'
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{point.key}</b><br>',
+                            pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y}'
+                        },
+                        plotOptions: {
+                            column: {
+                                stacking: 'normal',
+                                depth: 40
+                            }
+                        },
+                        series: [{
+                            name: '总量',
+                            data: data.all,
+                            stack: 'male'
+                        }, {
+                            name: '使用',
+                            data: data.use,
+                            stack: 'female'
+                        }],
+                        credits:{
+                            text: 'bitnei',
+                            href: ''
+                        }
+                    });
+                }
+            });
+            $.ajax({
+                url: '/server/mem_chart',
+                type: 'GET',
+                dataType:"json",
+                data: {'data':"sanqi" },
+                success: function(data) {
+                    $('#s_chart_mem').highcharts({
+                        chart: {
+                            type: 'column',
+                            options3d: {
+                                enabled: true,
+                                alpha: -5,
+                                beta: 35,
+                                viewDistance: 25,
+                                depth: 40
+                            },
+                            marginTop: 40,
+                            marginRight: 20
+                        },
+                        title: {
+                            text: '监管平台三期 内存使用情况'
+                        },
+                        xAxis: {
+                            categories: ['内存']
+                        },
+                        yAxis: {
+                            allowDecimals: false,
+                            min: 0,
+                            title: {
+                                text: '单位为 G'
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{point.key}</b><br>',
+                            pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y}'
+                        },
+                        plotOptions: {
+                            column: {
+                                stacking: 'normal',
+                                depth: 40
+                            }
+                        },
+                        series: [{
+                            name: '总量',
+                            data: data.all,
+                            stack: 'male'
+                        }, {
+                            name: '使用',
+                            data: data.use,
+                            stack: 'female'
+                        }],
+                        credits:{
+                            text: 'bitnei',
+                            href: ''
+                        }
+                    });
+                }
+            });
+{#    三期平台专门的试图#}
+            $.ajax({
+                url: '/server/mem_chart',
+                type: 'GET',
+                dataType:"json",
+                data: {'disk':true },
+                success: function(data) {
+                    $('#mem_chart').highcharts({
+                        chart: {
+                            type: 'column',
+                            options3d: {
+                                enabled: true,
+                                alpha: 15,
+                                beta: 15,
+                                viewDistance: 25,
+                                depth: 40
+                            },
+                            marginTop: 40,
+                            marginRight: 20
+                        },
+                        title: {
+                            text: '项目内存使用情况'
+                        },
+                        plotOptions: {
+                            column: {
+                                depth: 40,
+                                stacking: true,
+                                grouping: false,
+                                groupZPadding: 10
+                            }
+                        },
+                        xAxis: {
+                            categories: data.xm_name
+                        },
+                        yAxis: {
+                            allowDecimals: false,
+                            min: 0,
+                            title: {
+                                text: '单位为G'
+                            }
+                        },
+                        series: [{
+                            name:'使用情况',
+                            data: data.mem_use,
+                            stack: 0
+                        }, {
+                            name:'总量',
+                            data: data.mem_all,
+                            stack: 1
+                        }],
+                        credits:{
+                            text: 'bitnei',
+                            href: ''
+                        }
+                    })
+                }
+            });
+            $.ajax({
+                url: '/server/car_num_chart',
+                type: 'GET',
+                dataType:"json",
+                data: {'disk':true },
+                success: function(data) {
+                $('#car_num').highcharts({
+                chart: {
+                    type: 'pie',
+                    options3d: {
+                        enabled: true,
+                        alpha: 45
+                    }
+                },
+                colors: ['#00CACA', '#acb42b', '#ed3ae5', '#DDDF00','#FF2D2','#CF9E9E',
+                 '#24CBE5', '#FFBFFF', '#FF9655', '#8bff43', '#6AF9C4','#FF5151'],
+                title: {
+                    text: '车企在线车辆数'
+                },
+                plotOptions: {
+                    pie: {
+                        innerSize: 100,
+                        depth: 45
+                    }
+                },
+                series: [{
+                    name: '车辆数',
+                    data: data.data_list
+                }],
+                credits:{
+                    text: 'bitnei',
+                    href: ''
+                }
+                 });
+                }
+            });
+
+             $.ajax({
+                 url: '/server/app_chart',
+                 type: 'GET',
+                 dataType: "json",
+                 data: {'disk': true},
+                 success: function (data) {
+                    var chart = new Highcharts.Chart('app_chart', {
+                            chart: {
+                                type: 'bar'
+                            },
+                            title: {
+                                text: '各个项目中总共部署的程序与使用服务器个数'
+                            },
+                            subtitle: {
+                                text: '数据来源备案表'
+                            },
+                            xAxis: {
+                                categories: data.group_list,
+                                title: {
+                                    text: null
+                                }
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: '数量',
+                                    align: 'high'
+                                },
+                                labels: {
+                                    overflow: 'justify'
+                                }
+                            },
+                            plotOptions: {
+                                bar: {
+                                    dataLabels: {
+                                        enabled: true
+                                        // ,allowOverlap 默认是 false，即不允许数据标签重叠
+                                    }
+                                }
+                            },
+                            legend: {
+                                layout: 'vertical',
+                                align: 'right',
+                                verticalAlign: 'top',
+                                x: -0,
+                                y: 20,
+                                floating: true,
+                                borderWidth: 1,
+                                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                                shadow: true
+                            },
+                            credits: {
+                                text: 'bitnei',
+                                href: '',
+                                enabled: true
+                            },
+                            series: [{
+                                name: '部署的程序数量',
+                                data: data.app_list
+                            }, {
+                                name: '使用的服务器数量',
+                                data: data.host_list
+                            }]
+                        });
+                        $('input').click(function() {
+                            var val = $(this).prop('checked'),
+                                allowOverlap = val === 'on';
+                            chart.update({
+                                plotOptions: {
+                                    bar: {
+                                        dataLabels: {
+                                            allowOverlap: val
+                                        }
+                                    }
+                                }
+                            });
+                        });
+                 }
+             });
+
+            $.ajax({
+                 url: '/server/cq_chart',
+                 type: 'GET',
+                 dataType: "json",
+                 data: {'disk': true},
+                 success: function (data) {
+                    var chart = new Highcharts.Chart('cq_chart', {
+                            chart: {
+                                type: 'bar'
+                            },
+                            title: {
+                                text: '三方项目中总共使用服务器个数'
+                            },
+                            subtitle: {
+                                text: '数据来源备案表'
+                            },
+                            xAxis: {
+                                categories: data.group_list,
+                                title: {
+                                    text: null
+                                }
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: '数量',
+                                    align: 'high'
+                                },
+                                labels: {
+                                    overflow: 'justify'
+                                }
+                            },
+                            plotOptions: {
+                                bar: {
+                                    dataLabels: {
+                                        enabled: true
+                                        // ,allowOverlap 默认是 false，即不允许数据标签重叠
+                                    }
+                                }
+                            },
+                            legend: {
+                                layout: 'vertical',
+                                align: 'right',
+                                verticalAlign: 'top',
+                                x: -0,
+                                y: 20,
+                                floating: true,
+                                borderWidth: 1,
+                                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                                shadow: true
+                            },
+                            credits: {
+                                text: 'bitnei',
+                                href: '',
+                                enabled: true
+                            },
+                            series: [{
+                                name: '使用的服务器数量',
+                                data: data.host_list
+                            }]
+                        });
+                        $('input').click(function() {
+                            var val = $(this).prop('checked'),
+                                allowOverlap = val === 'on';
+                            chart.update({
+                                plotOptions: {
+                                    bar: {
+                                        dataLabels: {
+                                            allowOverlap: val
+                                        }
+                                    }
+                                }
+                            });
+                        });
+                 }
+             });
+
+             $.ajax({
+                 url: '/server/group_history',
+                 type: 'GET',
+                 dataType: "json",
+                 data: {'disk': true},
+                 success: function (data) {
+                     $('#group_history').highcharts('StockChart', {
+                         title: {
+                                text: '每个项目的磁盘使用同比变化图'
+                            },
+                         rangeSelector: {
+                             selected: 4
+                         },
+                         yAxis: {
+                             labels: {
+                                 formatter: function () {
+                                     return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                                 }
+                             },
+                             plotLines: [{
+                                 value: 0,
+                                 width: 2,
+                                 color: 'silver'
+                             }]
+                         },
+                         credits: {
+                                text: 'bitnei',
+                                href: '',
+                                enabled: true
+                            },
+                         plotOptions: {
+                             series: {
+                                 compare: 'percent'
+                             }
+                         },
+                         tooltip: {
+                             pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} g</b> ({point.change}%)<br/>',
+                             valueDecimals: 2
+                         },
+                         series: data.info
+                     });
+
+
+                 }
+             });
+        });
+
+
+
+    </script>
+
+{% endblock %}

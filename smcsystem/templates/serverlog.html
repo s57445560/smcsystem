@@ -1,0 +1,52 @@
+{% extends 'index_base.html' %}
+{% load tags %}
+{% block body %}
+    <div class="container">
+        <div class="panel panel-default container" style="padding: 0">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-book" aria-hidden="true" ></span>
+                <span>平台日志</span>
+                <form method="get" action="" style="display: inline">
+                    <button type="submit" class="btn btn-success btn-sm pull-right" style="margin-left: 5px;">查询</button>
+                    <input type="text" name="q" class="form-control input-sm pull-right" placeholder="Select" style="width: 200px;border-radius:15px 15px 15px 15px;">
+                </form>
+
+            </div>
+            <div class="panel-body" style="padding-bottom: 2px;">
+                {% for obj in contacts %}
+                    {% if obj.level == "info" %}
+                        <div class="alert alert-info" role="alert">
+                        服务器ip: {{ obj.host_ip__ip }}, 时间: {% time_format obj.time %}, 级别:{{ obj.level }} 信息:{{ obj.message }}
+                        </div>
+                    {% elif obj.level == "error" %}
+                        <div class="alert alert-danger" role="alert">
+                        服务器ip: {{ obj.host_ip__ip }}, 时间: {% time_format obj.time %}, 级别:{{ obj.level }} 信息:{{ obj.message }}
+                        </div>
+                    {% elif obj.level == "warning" %}
+                        <div class="alert alert-warning" role="alert">
+                        服务器ip: {{ obj.host_ip__ip }}, 时间: {% time_format obj.time %}, 级别:{{ obj.level }} 信息:{{ obj.message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if not contacts %}
+                    <div class="alert alert-success" role="alert">搜索内容为空 </div>
+                {% endif %}
+    {#            <div class="alert alert-success" role="alert">aaa</div>#}
+    {#            <div class="alert alert-info" role="alert">.aaa.ww.</div>#}
+    {#            <div class="alert alert-warning" role="alert">..aaeee.</div>#}
+    {#            <div class="alert alert-danger" role="alert">fffff.</div>#}
+            </div>
+                <div class="container">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            {{ str_page }}
+                        </ul>
+                    </nav>
+                    <span class="current">
+                            Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                    </span>
+                </div>
+        </div>
+    </div>
+{% endblock %}
+

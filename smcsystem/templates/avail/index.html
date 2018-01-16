@@ -1,0 +1,178 @@
+{% extends 'index_base.html' %}
+
+{% block css %}
+    <style>
+        h2{
+            color: #019858;
+        }
+        .stat h1:hover{
+             color: red;
+             cursor: pointer
+{#             background-color: crimson;#}
+         }
+
+    </style>
+{% endblock %}
+{% block body %}
+  <div class="main-inner container">
+      <div class="row">
+      {% if xm_list %}
+          <div class="col-md-6">
+              {% for i in left %}
+              <div class="widget">
+                  <div class="widget-content">
+                      <div id="{{ i.xmname }}" style="height: 400px"></div>
+                  </div>
+              </div>
+              {% endfor %}
+              {% for i in ab_left %}
+              <div class="widget">
+                  <div class="widget-content">
+                    <div id="{{ i }}" style="height: 400px"></div>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+          <div class="col-md-6">
+              {% for i in right %}
+              <div class="widget">
+                  <div class="widget-content">
+                    <div id="{{ i.xmname }}" style="height: 400px"></div>
+                  </div>
+              </div>
+              {% endfor %}
+              {% for i in ab_right %}
+              <div class="widget">
+                  <div class="widget-content">
+                    <div id="{{ i }}" style="height: 400px"></div>
+                  </div>
+              </div>
+              {% endfor %}
+        </div>
+        {% else %}
+          <h2 style="text-align: center">目前没有一级故障</h2>
+        {% endif %}
+      </div>
+  </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function() {
+            {% for xm in xm_list %}
+            $.ajax({
+                url: '/avail/chart/xm_chart',
+                type: 'GET',
+                dataType:"json",
+                data: {'disk':true,'xmname':'{{ xm.xmname }}'},
+                success: function(data) {
+                    $('#{{ xm.xmname }}').highcharts({
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: '{{ xm.xmname }} 平台各周可用率'
+                        },
+                        subtitle: {
+                            text: '数据来源: 平台故障统计'
+                        },
+                        xAxis: {
+                            categories: {{ week_list }},
+                            crosshair: true
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: '平台可用率'
+                            }
+                        },colors: ['#90ed7d'],
+                        tooltip: {
+                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.3f} %</b></td></tr>',
+                            footerFormat: '</table>',
+                            shared: true,
+                            useHTML: true
+                        },
+                        plotOptions: {
+                            column: {
+                                pointPadding: 0.2,
+                                borderWidth: 0
+                            }
+                        },credits:{
+                            text: 'bitnei',
+                            href: ''
+                        },
+                        series: [{
+                            name: '平台年可用率 '+ data.now_week +"%",
+                            data: data.data_list
+                        }]
+                    });
+                }
+            });
+            var week_list=[];
+            var data_list=[];
+            for (var i=1;i<={{ last_week }};i++)
+                {
+                    week_list.push(i)
+                };
+            for (var i=1;i<={{ last_week }};i++)
+                {
+                    if(i>{{ now_week }}) {
+                        data_list.push(0)
+                    }else{
+                    data_list.push(100)
+                    }
+                }
+                {% for name in absolutely_list %}
+            $('#{{ name }}').highcharts({
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: '{{ name }} 平台各周可用率'
+                        },
+                        subtitle: {
+                            text: '数据来源: 平台故障统计'
+                        },
+                        xAxis: {
+                            categories: week_list,
+                            crosshair: true
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: '平台可用率'
+                            }
+                        },colors: ['#90ed7d'],
+                        tooltip: {
+                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                            '<td style="padding:0"><b>{point.y:.3f} %</b></td></tr>',
+                            footerFormat: '</table>',
+                            shared: true,
+                            useHTML: true
+                        },
+                        plotOptions: {
+                            column: {
+                                pointPadding: 0.2,
+                                borderWidth: 0
+                            }
+                        },credits:{
+                            text: 'bitnei',
+                            href: ''
+                        },
+                        series: [{
+                            name: '平台年可用率 100%',
+                            data: data_list
+                        }]
+                    });
+                    {% endfor %}
+        {% endfor %}});
+
+
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'king/king_base.html' %}
+{% load tags %}
+
+{% block body %}
+
+
+    <div class="main-inner">
+
+	    <div class="container">
+
+	      <div class="row">
+
+	      	<div class="span12">
+
+	      		<div class="widget ">
+
+
+					<div class="widget-content">
+						<div class="tabbable">
+						<ul class="nav nav-tabs">
+						  <li class="active">
+						    <a href="#formcontrols" data-toggle="tab">删除操作</a>
+						  </li>
+						</ul>
+
+						<br>
+
+							<div class="tab-content">
+								<div class="tab-pane active" id="formcontrols">
+                                        <div class="container" style="overflow: auto">
+                                            {% if not admin_class.readonly_table %}
+                                            {% get_table_delete objs %}
+                                            {% endif %}
+                                            <p style="color: red">
+                                                {% for k,v in error.items %}
+                                                    {{ v }}
+                                                {% endfor %}
+                                            </p>
+
+
+                                    {#    <nav class="navbar navbar-default navbar-fixed-bottom" style="height: 10%">#}
+
+                                              <form method="post">{% csrf_token %}
+                                                <button type="submit" class="btn btn-danger" name="delect_data" value="yes" style="margin-top: 10px;margin-left: 40px">确认删除</button>
+                                                  <input type="hidden" value="{{ select_id }}" name="selected_ids"/>
+                                                  <input type="hidden" value="{{ action }}" name="action"/>
+                                                <a href="{% url 'table_obj' app_name table_name %}" class="btn btn-default" style="margin-top: 10px;margin-left: 20px;">取消操作</a>
+                                              </form>
+                                        </div>
+								</div>
+
+
+							</div>
+
+
+						</div>
+
+					</div> <!-- /widget-content -->
+
+				</div> <!-- /widget -->
+
+		    </div> <!-- /span8 -->
+
+
+
+
+	      </div> <!-- /row -->
+
+	    </div> <!-- /container -->
+
+	</div> <!-- /main-inner -->
+
+{#    </nav>#}
+
+
+{% endblock %}

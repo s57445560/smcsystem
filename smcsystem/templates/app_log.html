@@ -1,0 +1,29 @@
+{% extends 'index_base.html' %}
+
+{% block body %}
+      <div class="main-inner container">
+          <div class="row">
+                <div class="span12">
+                    <div class="panel panel-default container" style="padding: 0">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                            {{ format_str }} 日志
+                        </div>
+
+                        <div class="panel-body" style="padding-bottom: 2px;min-height: 300px;">
+                            <h2 style="color: crimson">{{ error }}</h2>
+                                {% if not status %}
+                                    <h3 style="color: crimson">请查看此服务是否配置了，日志路径信息！</h3>
+                                {% elif not salt_status %}
+                                    <h3 style="color: crimson">连接服务器失败.</h3>
+                                {% endif %}
+                                {% if message %}
+                                    <pre>{{ message }}</pre>
+                                {% endif %}
+                        </div>
+                    </div>
+                </div>
+          </div>
+      </div>
+
+{% endblock %}

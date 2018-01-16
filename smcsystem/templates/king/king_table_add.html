@@ -1,0 +1,129 @@
+{% extends 'king/king_base.html' %}
+{% load tags %}
+{% block body %}
+    <div class="main-inner">
+	    <div class="container">
+	      <div class="row">
+	      	<div class="span12">
+	      		<div class="widget ">
+					<div class="widget-content">
+						<div class="tabbable">
+						<ul class="nav nav-tabs">
+						  <li class="active">
+						    <a href="#formcontrols" data-toggle="tab">添加数据</a>
+						  </li>
+						  <li ><a href="#jscontrols" data-toggle="tab">预留</a></li>
+						</ul>
+
+						<br>
+
+							<div class="tab-content">
+								<div class="tab-pane active" id="formcontrols">
+                                        <div class="container" style="height: 90%;overflow: auto">
+                                            <form class="form-horizontal" method="post" onsubmit="return Select_data();"> {% csrf_token %}
+
+                                                {% for input in form_obj %}
+                                              <div class="form-group">
+                                                <label class="col-sm-2 control-label" style="font-weight: normal">
+                                                    {% if input.field.required %}
+                                                        <b>{{ input.label }}</b>
+                                                    {% else %}
+                                                        {{ input.label }}
+                                                    {% endif %}
+                                                </label>
+
+
+                                                {% if input.name in admin_class.filter_horizontal %}
+                                                    <div class="col-md-8">
+
+                                                        <div class="col-md-5" style="padding: 0">
+                                                            {% get_m2m admin_class input form_obj as m2m_obj_list %}
+
+                                                                <div class="alert-info" style="border-radius:7px 7px 0 0;"><span class="glyphicon glyphicon-search" aria-hidden="true" style="padding-left: 20px;"></span><span style="padding-left: 5px;">待选</span></div>
+                                                                <select tag="left" id="id_{{ input.name }}_from" multiple class="form-control" style="height: 140px;overflow: auto">
+                                                                    {% for obj in m2m_obj_list %}
+                                                                        <option value="{{ obj.id }}" ondblclick="MoveElementTo(this,'id_{{ input.name }}_to','id_{{ input.name }}_from')">{{ obj }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                        </div>
+
+                                                        <div class="col-md-1" style="padding-left: 2px;padding-right: 2px;text-align: center">
+                                                            <button type="button" class="btn btn-default " onclick="Swap_select('id_{{ input.name }}_from','id_{{ input.name }}_to');" style="margin-top: 70px;">
+                                                            <span class="glyphicon glyphicon-retweet" style="color: #46a546" aria-hidden="true" ></span>
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="col-md-5" style="padding: 0">
+                                                            {% get_m2m_select form_obj input as m2m_select %}
+                                                                <div class="alert-info" style="border-radius:7px 7px 0 0;"><span class="glyphicon glyphicon-floppy-saved" aria-hidden="true" style="padding-left: 20px;"></span><span style="padding-left: 5px;">已选</span></div>
+                                                                <select tag="submit" id="id_{{ input.name }}_to" multiple class="form-control" name="{{ input.name }}" style="height: 140px;overflow: auto">
+                                                                    {% for obj in m2m_select %}
+                                                                        <option value="{{ obj.id }}" ondblclick="MoveElementTo(this,'id_{{ input.name }}_from','id_{{ input.name }}_to')">{{ obj }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                                <span style="color: red">{{ input.errors.as_text }}</span>
+                                                            </div>
+                                                     </div>
+                                                {% else %}
+                                                    <div class="col-sm-6">
+                                                        {{ input }} <span style="color: red">{{ input.errors.as_text }}</span>
+                                                    </div>
+                                                {% endif %}
+
+                                              </div>
+                                                {% endfor %}
+                                    {#            <nav class="navbar navbar-default navbar-fixed-bottom" style="height: 10%">#}
+                                                      <div class="">
+                                                           <a class="btn btn-success" style="margin-top: 10px;" href="{% url 'table_obj' app_name table_name %}">返回</a>
+                                                           <button type="submit" class="btn btn-success pull-right" style="margin-right: 190px;margin-top: 10px;">提交</button>
+                                                        </div>
+                                    {#            </nav>#}
+                                            </form>
+                                        </div>
+								</div>
+
+								<div class="tab-pane" id="jscontrols">
+
+								</div>
+
+							</div>
+						</div>
+					</div> <!-- /widget-content -->
+				</div> <!-- /widget -->
+		    </div> <!-- /span8 -->
+	      </div> <!-- /row -->
+	    </div> <!-- /container -->
+	</div> <!-- /main-inner -->
+
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        function Select_data() {
+            $('form').find("[disabled]").removeAttr("disabled");
+            $("select[tag='submit'] option").each(function() {
+                $(this).prop("selected",true);
+            });
+            return true;
+        }
+        function MoveElementTo(ths,target_id,new_target_id) {
+            var opt_ele = "<option value='" + $(ths).val() + "' ondblclick=MoveElementTo(this,'" + new_target_id +"','"+ target_id+"')>" + $(ths).text() +"</option>";
+            $("#"+target_id).append(opt_ele);
+            $(ths).remove();
+        }
+        function Swap_select(from,to) {
+            $("select[tag='left'] option:selected").each(function () {
+                var opt_ele = "<option value='" + $(this).val() + "' ondblclick=MoveElementTo(this,'" + from +"','"+ to+"')>" + $(this).text() +"</option>";
+                $("#" + to).append(opt_ele);
+                $(this).remove();
+            });
+            $("select[tag='submit'] option:selected").each(function () {
+                var opt_ele = "<option value='" + $(this).val() + "' ondblclick=MoveElementTo(this,'" + to +"','"+ from +"')>" + $(this).text() +"</option>";
+                $("#" + from).append(opt_ele);
+                $(this).remove();
+            });
+        }
+    </script>
+{% endblock %}

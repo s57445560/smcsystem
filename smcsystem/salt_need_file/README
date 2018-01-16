@@ -1,0 +1,5 @@
+get_host_info.sh是用来获取服务器的基础信息的
+command_salt.py是用来执行salt命令的
+
+
+这两个脚本都需要放在 salt master 的 /srv/salt/scripts路径下

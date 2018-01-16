@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>自动化运维操作平台</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+    <link href="/static/bootstrap/bootstrap-3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="/static/css/font-awesome.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="/static/css/pages/dashboard.css" rel="stylesheet">
+
+    {% block css %} {% endblock %}
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container"> <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span> </a><a class="brand" href="/">自动化运维操作平台 </a>
+      <div class="nav-collapse">
+        <ul class="nav pull-right">
+          <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-size:16px;"><i
+                            class="icon-user"></i> {{ request.session.user }} <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="/avail/settings/">设置</a></li>
+              <li><a href="{% url 'logout' %}">登出</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!--/.nav-collapse --> 
+    </div>
+    <!-- /container --> 
+  </div>
+  <!-- /navbar-inner --> 
+</div>
+<!-- /navbar -->
+<div class="subnavbar">
+  <div class="subnavbar-inner">
+    <div class="container">
+      <ul class="mainnav">
+        <li id="a1"><a href="/"><i class="icon-dashboard"></i><span>仪表盘</span> </a> </li>
+        <li id="a2"><a href="/king_admin/filing/host/"><i class="icon-list-alt"></i><span>主机信息</span> </a> </li>
+        <li id="a3"><a href="/king_admin/filing/group/"><i class="icon-facetime-video"></i><span>项目信息</span> </a></li>
+        <li id="a4"><a href="/king_admin/filing/code/"><i class="icon-bar-chart"></i><span>所有程序信息</span> </a> </li>
+        <li id="a7" class="dropdown"><a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-group"></i><span>第三方平台</span> <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+              <li><a href="/king_admin/filing/cq_group/">项目信息</a></li>
+              <li><a href="/king_admin/filing/cq_host/">主机信息</a></li>
+              <li><a href="/king_admin/filing/cq_code/">程序信息</a></li>
+          </ul>
+        </li>
+        <li id="a8" class="dropdown"><a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-calendar"></i><span>故障统计</span> <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+              <li><a href="/king_admin/avail/info/">故障明细</a></li>
+              <li><a href="/avail/create/">添加故障</a></li>
+              <li><a href="/avail/chart/">周可用率报表</a></li>
+              <li><a href="/avail/year_chart/">年可用率报表</a></li>
+              <li><a href="/avail/gz_chart/">故障占比报表</a></li>
+          </ul>
+        </li>
+          {% if request.session.admin == "admin" %}
+        <li id="a5" class="dropdown"><a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-code"></i><span>平台操作与升级</span> <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+              <li><a href="/command/operation/">命令执行</a></li>
+              <li><a href="#">平台升级</a></li>
+          </ul>
+        </li>
+          {% endif %}
+        <li id="a6" class="dropdown"><a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-long-arrow-down"></i><span>平台日志</span> <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+              <li><a href="{% url 'serverlog' %}">全部日志</a></li>
+              <li><a href="{% url 'servererrorlog' %}">错误日志</a></li>
+
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <!-- /container --> 
+  </div>
+  <!-- /subnavbar-inner --> 
+</div>
+<!-- /subnavbar -->
+<div class="main" style="padding: 0px;">
+    {% block body %} {% endblock %}
+</div>
+
+
+<div class="footer">
+  <div class="footer-inner">
+    <div class="container">
+      <div class="row">
+        <div class="span12"> &copy; 2017 <a href="#">系统部运维系统</a> -- 备案表</div>
+        <!-- /span12 --> 
+      </div>
+      <!-- /row --> 
+    </div>
+    <!-- /container --> 
+  </div>
+  <!-- /footer-inner --> 
+</div>
+<!-- /footer --> 
+<!-- Le javascript
+================================================== --> 
+<!-- Placed at the end of the document so the pages load faster --> 
+    <script src="/static/js/jquery-1.7.2.min.js"></script>
+    <script src="/static/js/excanvas.min.js"></script>
+    <script src="/static/js/chart.min.js" type="text/javascript"></script>
+    <script src="/static/js/bootstrap.js"></script>
+    <script language="javascript" type="text/javascript" src="/static/js/full-calendar/fullcalendar.min.js"></script>
+    <script src="/static/js/base.js"></script>
+{#    <script src="/static/charts/code/highcharts.js"> </script>#}
+    <script src="/static/stock/code/highstock.js"></script>
+{#    <script src="/static/charts/code/modules/exporting.js"> </script>#}
+    <script src="/static/charts/code/highcharts-3d.js"> </script>
+    <script src="/static/charts/code/themes/grid-light.js"></script>
+    {% block js %}{% endblock %}
+    <script>
+        var host =/\/king_admin\/filing\/host\/.*/g;
+        var group =/\/king_admin\/filing\/group\/.*/g;
+        var code =/\/king_admin\/filing\/code\/.*/g;
+        var serverlog =/\/server\/log\/.*/g;
+        var servererrorlog =/\/server\/errorlog\/.*/g;
+        var command_operation =/\/command\/operation\/.*/g;
+        var cq_host =/\/king_admin\/filing\/cq_host\/.*/g;
+        var cq_group =/\/king_admin\/filing\/cq_group\/.*/g;
+        var cq_code =/\/king_admin\/filing\/cq_code\/.*/g;
+        var gz_code =/\/king_admin\/avail\/info\/.*/g;
+        var gz_add =/\/avail\/create\/.*/g;
+        var gz_chart =/\/avail\/chart\/.*/g;
+        var gz_gz_chart =/\/avail\/gz_chart\/.*/g;
+        var gz_year_chart =/\/avail\/year_chart\/.*/g;
+        console.log(location.href);
+        var url_data = location.href;
+        if(url_data.match(host)){
+            console.log('host');
+            $('#a2').addClass('active');
+        }else if(url_data.match(group)){
+            console.log('group');
+            $('#a3').addClass('active');
+        }else if(url_data.match(code)){
+            $('#a4').addClass('active');
+        }else if(url_data.match(serverlog)) {
+            $('#a6').addClass('active');
+        }else if(url_data.match(servererrorlog)){
+            $('#a6').addClass('active');
+        }else if(url_data.match(command_operation)){
+            $('#a5').addClass('active');
+        }else if(url_data.match(cq_host)) {
+            $('#a7').addClass('active');
+        }else if(url_data.match(cq_group)) {
+            $('#a7').addClass('active');
+        }else if(url_data.match(cq_code)) {
+            $('#a7').addClass('active');
+        }else if(url_data.match(gz_code)) {
+            $('#a8').addClass('active');
+        }else if(url_data.match(gz_add)) {
+            $('#a8').addClass('active');
+        }else if(url_data.match(gz_chart)) {
+            $('#a8').addClass('active');
+        }else if(url_data.match(gz_gz_chart)) {
+            $('#a8').addClass('active');
+        }else if(url_data.match(gz_year_chart)) {
+            $('#a8').addClass('active');
+        }
+
+    </script>
+</body>
+</html>

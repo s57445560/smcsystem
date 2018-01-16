@@ -1,0 +1,136 @@
+{% extends 'index_base.html' %}
+
+
+{% block body %}
+    <div class="main-inner">
+	    <div class="container">
+	      <div class="row">
+	      	<div class="span12">
+	      		<div class="widget ">
+					<div class="widget-content">
+						<div class="tabbable">
+						<ul class="nav nav-tabs" style="margin-bottom: 0;">
+						  <li class="active">
+						    <a href="#formcontrols" data-toggle="tab">命令操作</a>
+						  </li>
+						  <li ><a href="#jscontrols" data-toggle="tab">预留</a></li>
+						</ul>
+
+						<br>
+
+							<div class="tab-content">
+								<div class="tab-pane active" id="formcontrols">
+                                    <div id="log" class="jumbotron" style="height: 400px;padding:25px;padding-top:8px;margin-bottom: 0;overflow: auto;">
+                                        <h4>屏幕输出</h4>
+                                    </div>
+                                    <hr/>
+                                    <div class="col-md-1" style="padding: 0;padding-top: 25px;"><span>全部主机 <input type="checkbox" id="check_all" value="all"></span></div>
+
+                                    <div class="col-md-6" style="height: 57px;padding-right: 0">
+                                          <div class="input-group" style="padding-top: 20px;">
+                                              <div class="input-group-addon btn-warning">输入命令</div>
+                                              <input type="text" class="form-control col-md-5" id="exampleInputAmount" placeholder="command">
+                                          </div>
+                                    </div>
+                                    <div class="col-md-1" style="padding-top: 23px;">
+                                        <button id="submit_ths" type="button" class="btn btn-primary" onclick="submit_data()">命令执行</button>
+                                    </div>
+                                    <div class="col-md-4" >
+                                        <label for="id_label_multiple" style="color: #019858">请选择主机
+                                            <select class="js-example-basic-multiple js-states form-control" multiple="multiple" id="id_label_multiple">
+                                                {% for ip in ip_dio %}
+                                                    <option value="{{ ip.salt_id }}">{{ ip.salt_id }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </label>
+                                    </div>
+								</div>
+
+								<div class="tab-pane" id="jscontrols">
+                                    <p>暂时没有内容</p>
+								</div>
+
+							</div>
+						</div>
+					</div> <!-- /widget-content -->
+				</div> <!-- /widget -->
+		    </div> <!-- /span8 -->
+	      </div> <!-- /row -->
+	    </div> <!-- /container -->
+	</div> <!-- /main-inner -->
+
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/select/vendor/jquery-2.1.0.js"></script>
+    <link href="/static/select/dist/css/select2.css" rel="stylesheet" />
+    <script src="/static/select/dist/js/select2.full.js"></script>
+    <script src="/static/select/dist/js/select2.js"></script>
+    <script>
+        $(function(){
+            $('#log').scrollTop( $('#log')[0].scrollHeight );
+        });
+
+        $(".js-example-basic-multiple").select2({});
+        function submit_data(ths) {
+            var c_all = true;
+            var ip_list = [];
+            var command_data = $("#exampleInputAmount").val();
+            var checkbox_status = $("#check_all").prop("checked");
+            var reslist = $(".js-example-basic-multiple").select2("data");
+            if(command_data == ''){
+                alert("没有输入命令");
+                return;
+            }
+
+            if(reslist != ''){
+                var c_all = false;
+                $.each(reslist,function(key,value) {
+                    ip_list.push(value.text)
+                });
+                console.log(ip_list)
+            }else if(checkbox_status&&c_all){
+                console.log("aaaa");
+            }else{
+                alert("没有选择主机");
+                return;
+            }
+
+            $("#submit_ths").attr("disabled",true);
+            $("#log").empty();
+            $('#log').append('<p style="margin: 0;padding: 0;font-size: 17px;color: #019858">' + "执行中请稍后..." + '</p>');
+            $.ajax({url: "/command/operation/",
+                  type: "POST",
+                  dataType: "JSON",
+                  data: {'ip_list':JSON.stringify(ip_list),'all':c_all,"command":command_data},
+                  success: function(result){
+                        console.log(result);
+                      if(result.message.error == "true"){
+                          $('#log').append('<p style="margin: 0;padding: 0;font-size: 17px;color: red">' + result.message.message + ':</p>');
+                          $("#submit_ths").attr("disabled",false);
+                          return;
+                      }
+                      if(result.status){
+                        $.each(result.message,function (key,value) {
+                            console.log(key,value.stdout);
+                            $('#log').append('<p style="margin: 0;padding: 0;font-size: 17px;color: #019858">' + key + ':</p>');
+                            if(value == "salt_log_error"){
+                                $('#log').append('<pre style="margin: 0;padding: 0;font-size: 12px;color:red">' + "salt 链接服务器失败！" + '</pre>');
+                            }else {
+                                $('#log').append('<pre style="margin: 0;padding: 0;font-size: 12px;">' + value + '</pre>');
+                                $('#log').scrollTop($('#log')[0].scrollHeight);
+                            }
+                        });
+                          $("#submit_ths").attr("disabled",false)
+                   }else{
+                          $('#log').append('<p style="margin: 0;padding: 0;font-size: 17px;color: red">'+ 'salt 链接失败!' +'</p>');
+                          $("#submit_ths").attr("disabled",false)
+                      }
+                  }
+            });
+        }
+
+    </script>
+{% endblock %}

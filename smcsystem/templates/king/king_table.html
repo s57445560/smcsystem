@@ -1,0 +1,164 @@
+{% extends 'king/king_base.html' %}
+{% load tags %}
+{% block css %}
+
+
+
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="panel panel-default container" style="padding: 0">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                {% table_cn_name admin_class %}
+                {% if not admin_class.readonly_table %}
+                    {% if request.path == "/king_admin/avail/info/" %}
+                        <a href="/avail/create/" class="pull-right btn-xs">
+                            增加一条新数据
+                        </a>
+                    {% else %}
+                        <a href="{{ rquest.path }}add/" class="pull-right btn-xs">
+                            增加一条新数据
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+
+            <div class="panel-body" style="padding-bottom: 2px;">
+                <form method="get">
+                    <div class="row" style="padding-left: 20px;">
+                    {% if admin_class.list_filter %}
+                        {% for k in admin_class.list_filter %}
+                            <div class="col-md-2">
+                                <span>{% get_cn_name admin_class admin_class.list_filter k %}</span>
+                                {% select_list k admin_class filter_conditions %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+
+                    {% if admin_class.list_filter %}
+                        <button type="submit" class="btn btn-success btn-sm" style="margin-top: 23px">提交</button>
+                    {% endif %}
+                    </div>
+                    {% if admin_class.list_search %}
+
+                        <div class="row" style="margin-top: 7px;padding-left: 20px;">
+                            <div class="col-md-3" style="padding-right: 0">
+                                <input type="text" class="form-control input-sm" name="q" placeholder="search by{% for i in admin_class.list_search %} {{ i }} {% endfor %}" value="{{ q_str}}">
+
+                            </div>
+                            <div class="col-md-1" style="padding-left: 3px;">
+                                <button class="btn btn-success btn-sm" type="submit">搜索</button>
+                            </div>
+                        </div>
+
+                    {% endif %}
+                </form>
+            </div>
+
+            <div class="panel-body" style="padding-top: 2px ">
+                        <div class="col-md-12 footer form-inline" style="margin-top: 7px">
+                            <form onsubmit="return Actionsubmit(this)" method="post" style="padding-top: 5px;">{% csrf_token %}
+                            <span>动作:</span>
+                            <select class="form-control input-sm " name="action" id="action_id" style="width: 300px;">
+                                <option value="">- - - - - - - -</option>
+                                {% for action in admin_class.actions %}
+                                    <option value="{{ action }}">{% get_action_cn_name admin_class action %}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn input-sm">GO</button>
+                            </form>
+                        </div>
+
+
+                <table class="table table-hover table-condensed" >
+                    <thead>
+                        <tr>
+                            <td style="width: 40px;"> <input type="checkbox" onclick="select_all(this);"/> </td>
+                            {% for title in admin_class.list_display %}
+                                {% if table_sort == None or table_sort == '' or title not in table_sort.keys %}
+    {#                                如果是自定义标签就不排序了#}
+                                    {% get_custom_field admin_class title as result %}
+                                    {% if result %}
+                                        <th><a href="#">{% get_cn_name admin_class admin_class.list_display title %}</a></th>
+                                    {% else %}
+                                        {% if title == "text" %}
+                                        <th style="width: 600px;"><a href="{{ filter_str }}&o={{ title }}&q={{ q_str }}">{% get_cn_name admin_class admin_class.list_display title %}</a></th>
+                                        {% else %}
+                                        <th><a href="{{ filter_str }}&o={{ title }}&q={{ q_str }}">{% get_cn_name admin_class admin_class.list_display title %}</a></th>
+                                        {% endif %}
+                                    {% endif %}
+                                 {% else %}
+                                    {% if title in  table_sort.keys and True in table_sort.values %}
+                                        <th><a href="{{ filter_str }}&o=-{{ title }}&q={{ q_str }}">{% get_cn_name admin_class admin_class.list_display title %}<span class="glyphicon glyphicon-chevron-up pull-right"></span></a></th>
+                                    {% else %}
+                                        <th><a href="{{ filter_str }}&o={{ title }}&q={{ q_str }}">{% get_cn_name admin_class admin_class.list_display title %}<span class="glyphicon glyphicon-chevron-down pull-right"></span></a></th>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                            {% for obj in contacts %}
+                                <tr>
+                                    <td><input tag="obj_checkbox" type="checkbox" value="{{ obj.id }}"/></td>
+                                    {% table_info obj admin_class %}
+                                </tr>
+                            {% endfor %}
+                    </tbody>
+                </table>
+
+
+                        <nav aria-label="Page navigation" >
+                            <ul class="pagination " >
+                                {{ str_page }}
+                            </ul>
+                        </nav>
+                        <span class="">
+                                Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                        </span>
+                        <span >
+                            数据总共: {{ contacts.paginator.count }}条.
+                        </span>
+                </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        function select_all(ths) {
+            if($(ths).prop('checked')){
+                $("input[tag='obj_checkbox']").prop('checked',true);
+            }else{
+                $("input[tag='obj_checkbox']").prop('checked',false);
+            }
+        }
+        function Actionsubmit(form_ele) {
+            var select_ids = [];
+            $("input[tag='obj_checkbox']:checked").each(function () {
+                select_ids.push($(this).val());
+            });
+            var action_name = $("#action_id").val();
+            if(select_ids.length == 0){
+                alert("没有选中的项目！");
+                console.log("没有选中的项目！");
+                return false;
+            }else if (action_name == ''){
+                alert("没有选中动作");
+                console.log("没有选中动作");
+                return false;
+            }
+            var selected_ids_ele = "<input  name='selected_ids' type='hidden' value='" + select_ids.toString() + "' >"
+            $(form_ele).append(selected_ids_ele);
+            return true;
+        };
+{#        用来显示鼠标滑过的效果#}
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
+
+    </script>
+{% endblock %}

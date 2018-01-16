@@ -1,0 +1,46 @@
+{% extends 'index_base.html' %}
+
+{% block css %}
+    <style>
+        h2{
+            color: #019858;
+        }
+        .stat h1:hover{
+             color: red;
+             cursor: pointer
+{#             background-color: crimson;#}
+         }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="main-inner container">
+  <div class="row">
+      <div class="widget">
+          <div class="widget-content">
+              <div>
+                  <h2>用户设置页面</h2>
+                  <hr>
+              </div>
+                <form action="/avail/settings" method="post">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="font-weight: normal;padding-top: 6px;">
+                            <b>设置查看报表的年份：</b>
+                        </label>
+                        <input name="year" class="form-control input-sm" type="text" style="width: 200px;" value="{{ year }}">
+                    </div>
+                    <div style="height: 270px;"></div>
+                    <input class="btn btn-success btn-sm" type="submit" value="提交" style="margin-left: 20px;">
+
+                </form>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}
