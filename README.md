@@ -41,7 +41,7 @@
 
 故障统计
 ---
-![image](https://github.com/s57445560/smcsystem/raw/master/smcsystem/img/error1.png)
+![image](https://github.com/s57445560/smcsystem/raw/master/smcsystem/img/error4.png)
 <br>
 <br>
 ![image](https://github.com/s57445560/smcsystem/raw/master/smcsystem/img/error2.png)
