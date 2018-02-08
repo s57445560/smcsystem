@@ -1953,3 +1953,4 @@ System check identified 6 issues (0 silenced).
 [08/Feb/2018 18:34:47] "GET /king_admin/avail/info/ HTTP/1.1" 200 19123
 [08/Feb/2018 18:34:47] "GET /king_admin/avail/info/ HTTP/1.1" 200 19123
 [08/Feb/2018 18:34:48] "GET /king_admin/avail/info/ HTTP/1.1" 200 19123
+[08/Feb/2018 18:36:34] "GET /king_admin/avail/info/ HTTP/1.1" 200 19123
