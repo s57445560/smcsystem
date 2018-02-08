@@ -116,15 +116,12 @@
             for (var i=1;i<={{ last_week }};i++)
                 {
                     week_list.push(i)
-                };
-            for (var i=1;i<={{ last_week }};i++)
-                {
                     if(i>{{ now_week }}) {
                         data_list.push(0)
                     }else{
                     data_list.push(100)
                     }
-                }
+                };
                 {% for name in absolutely_list %}
             $('#{{ name }}').highcharts({
                         chart: {

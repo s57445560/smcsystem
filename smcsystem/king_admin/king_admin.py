@@ -362,7 +362,7 @@ class CQ_CodeAdmin(BaseAdmin):
 
 class InfoAdmin(BaseAdmin):
     list_display = ('id','xmname','start_time','end_time','level','text')
-    list_filter = ('xmname','level')
+    list_filter = ('xmname','level','username','end')
     list_search = ('xmname','start_time')
     page_number = 30
 

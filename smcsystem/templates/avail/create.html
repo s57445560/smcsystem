@@ -46,6 +46,21 @@
                             <span>结束时间: </span><input type="text" name="end" readonly>
                             <span class="add-on" style="margin-bottom: 7px;display: none"><i class="icon-calendar"></i></span>
                         </div>
+
+                        <div >
+                            <span>故障提交: </span><input type="text" name="username" value="{{ request.session.user }}" style="height: 26px" readonly>
+                        </div>
+
+                        <div>
+                            <span>故障状态:</span>
+                                <select class="form-control input-sm" style="width: 210px;display: inline" id="end">
+                                    <option value="" ></option>
+                                    {% for name in end_table %}
+                                        <option value="{{ name.0 }}" >{{ name.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                         </div>
+
                         <div >
                             <span>故障明细: </span><textarea class="form-control span6" name="text" rows="3"></textarea>
                         </div>
@@ -98,15 +113,17 @@
         function submit() {
             var xmname = $("#select option:selected").val();
             var level = $("#level option:selected").val();
-            var start = $('input[name=start]').val();
-            var end = $('input[name=end]').val();
+            var fault = $("#end option:selected").val();
+            var start_time = $('input[name=start]').val();
+            var end_time = $('input[name=end]').val();
+            var username = $('input[name=username]').val();
             var text = $('textarea[name=text]').val();
             $("#log").text("");
             $.ajax({
                   url: "/avail/create",
                   type: "POST",
                   dataType: "JSON",
-                  data: {'xmname':xmname,'start':start,'end':end,'text':text,'level':level},
+                  data: {'xmname':xmname,'start_time':start_time,'end_time':end_time,'text':text,'level':level,'username':username,'fault':fault},
                   success:function (data) {
                         if(!data.data.status){
                             console.log(data.data.message);
@@ -121,15 +138,17 @@
         function submit2() {
             var xmname = $("#select option:selected").val();
             var level = $("#level option:selected").val();
-            var start = $('input[name=start]').val();
-            var end = $('input[name=end]').val();
+            var fault = $("#end option:selected").val();
+            var start_time = $('input[name=start]').val();
+            var end_time = $('input[name=end]').val();
+            var username = $('input[name=username]').val();
             var text = $('textarea[name=text]').val();
             $("#log").text("");
             $.ajax({
                   url: "/avail/create",
                   type: "POST",
                   dataType: "JSON",
-                  data: {'xmname':xmname,'start':start,'end':end,'text':text,'level':level},
+                  data: {'xmname':xmname,'start_time':start_time,'end_time':end_time,'text':text,'level':level,'username':username,'fault':fault},
                   success:function (data) {
                         if(!data.data.status){
                             console.log(data.data.message);
@@ -138,7 +157,7 @@
                             console.log("ccccccc");
                             $('input[name=start]').val('');
                             $('input[name=end]').val('');
-                            $("#level option:selected").attr("selected",false)
+                            $("#level option:selected").attr("selected",false);
                             $('textarea[name=text]').val('');
                             $("#log").text("保存成功，可以继续填写");
                         }
