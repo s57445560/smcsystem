@@ -231,15 +231,20 @@ def table_obj_change(request,app_name, table_name, first_field):
         h_net_obj = Host_net.objects.filter(salt_id=salt_id)
         if h_net_obj:
             ifconfig_info =h_net_obj[0].ip_info
-
-    if os.path.exists("statics/imgcode/%s.jpg" % obj.ip):
-        img_status = True
+    print(dir(obj))
+    if hasattr(obj,"ip"):
+        if os.path.exists("statics/imgcode/%s.jpg" % obj.ip):
+            img_status = True
+        else:
+            img_status = False
+        img_ip = obj.ip
     else:
         img_status = False
+        img_ip = None
 
     return render(request,'king/king_table_change.html',{'form_obj':form_obj,'app_name':app_name,'table_name':table_name,
                                                          "admin_class":admin_class,"ifconfig_info":ifconfig_info,"get_uri":referer,
-                                                         "ip":obj.ip,"img_status":img_status})
+                                                         "ip":img_ip,"img_status":img_status})
 
 
 # 添加时的视图
