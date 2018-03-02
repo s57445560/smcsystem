@@ -156,10 +156,10 @@ CRONJOBS = [
 
 
 # 值班日报与周报发送的邮箱配置
-SENDER = 'jumpserver@bitnei.cn'
-RECEIVER = 'sunyang@bitnei.cn'
-SMTPSERVER = 'smtp.exmail.qq.com'
-USERNAME = 'jumpserver@bitnei.cn'
-PASSWORD = 'Lgxy@z9w5'
+SENDER = '...'
+RECEIVER = '...'
+SMTPSERVER = '...'
+USERNAME = '...'
+PASSWORD = '...'
 
 
