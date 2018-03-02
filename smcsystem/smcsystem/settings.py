@@ -144,7 +144,22 @@ SALT_API_SCRIPT_PATH = "/srv/salt/scripts/command_salt.py"
 THIS_YEAR = 2017
 
 
+# 用来设置日报和周报是否自动发送
+AUTO_REPORT = False
+
 # 用来设置定时任务的，这个定时任务是每天会用salt更新平台的host信息，然后统计使用情况入库
 CRONJOBS = [
     ('40 03 * * *', 'django.core.management.call_command', ['every_day_data'],{},'>> /var/run.log 2>&1'),
+    ('50 23 * * *', 'django.core.management.call_command', ['day_report'],{},'>> /var/run.log 2>&1'),
+    ('40 23 * * 6', 'django.core.management.call_command', ['week_report'],{},'>> /var/run.log 2>&1'),
 ]
+
+
+# 值班日报与周报发送的邮箱配置
+SENDER = 'jumpserver@bitnei.cn'
+RECEIVER = 'sunyang@bitnei.cn'
+SMTPSERVER = 'smtp.exmail.qq.com'
+USERNAME = 'jumpserver@bitnei.cn'
+PASSWORD = 'Lgxy@z9w5'
+
+

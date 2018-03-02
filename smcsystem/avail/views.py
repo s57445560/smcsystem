@@ -57,11 +57,14 @@ def create(request):
         username = request.POST.get("username", None)
         fault = request.POST.get("fault", None)
         print(start_time,end_time,text,level,xmname,username,fault)
-        if start_time and end_time and text and xmname and level:
+        if start_time and end_time and text and xmname and level and fault:
             s_time = time.mktime(time.strptime(start_time,"%Y-%m-%d %H:%M"))
             s_end = time.mktime(time.strptime(end_time,"%Y-%m-%d %H:%M"))
             if s_time > s_end:
+                print(s_time,s_end)
                 message = "起始时间不能大于结束时间，请重新填写"
+                status = False
+                return HttpResponse(json.dumps({"data": {"message": message, "status": status}}))
             obj = models.Group.objects.filter(name=xmname)
             cq_obj = models.CQ_Group.objects.filter(name=xmname)
             if obj or cq_obj:
