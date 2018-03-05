@@ -214,9 +214,9 @@ def xm_chart(request):
 # 故障百分比出图
 def gz_chart(request):
     xmname = request.GET.get("xmname")
-    level1 = Info.objects.filter(xmname=xmname,level=1).count()
-    level2 = Info.objects.filter(xmname=xmname,level=2).count()
-    level3 = Info.objects.filter(xmname=xmname,level=3).count()
+    level1 = Info.objects.filter(xmname=xmname,level=1,start_time__icontains=this_year).count()
+    level2 = Info.objects.filter(xmname=xmname,level=2,start_time__icontains=this_year).count()
+    level3 = Info.objects.filter(xmname=xmname,level=3,start_time__icontains=this_year).count()
     data_list = []
     data_list.append(["一级故障",level1])
     data_list.append(["二级故障",level2])
@@ -229,7 +229,7 @@ def gz_chart(request):
 @csrf_exempt
 @login_auth
 def gz_index(request):
-    xm_list = Info.objects.filter(level=1,end=1,start_time__icontains=this_year).values('xmname').annotate(c=Count('xmname'))
+    xm_list = Info.objects.filter(start_time__icontains=this_year).values('xmname').annotate(c=Count('xmname'))
     xm_num = len(xm_list)
     xm_index = int(xm_num/2)
     xm_left = xm_list[xm_index::]
