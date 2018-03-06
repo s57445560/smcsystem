@@ -364,6 +364,7 @@ class InfoAdmin(BaseAdmin):
     list_display = ('id','xmname','start_time','end_time','level','end','text')
     list_filter = ('xmname','level','username','end')
     list_search = ('xmname','start_time')
+    readonly_fields = ['username',]
     page_number = 30
 
     def active(self):
