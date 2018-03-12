@@ -111,10 +111,4 @@ def run():
 
 
 if __name__ == '__main__':
-    scheduler = BlockingScheduler()
-    scheduler.add_job(run, 'cron', hour=3,minute=50)
-    print("任务已经开始")
-    try:
-        scheduler.start()
-    except (KeyboardInterrupt, SystemExit):
-        pass
+    run()
