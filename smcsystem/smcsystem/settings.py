@@ -143,6 +143,8 @@ SALT_API_SCRIPT_PATH = "/srv/salt/scripts/command_salt.py"
 # 用来设置故障统计系统内的统计年份
 THIS_YEAR = 2017
 
+# session 设置
+SESSION_COOKIE_AGE = 7200
 
 # 用来设置日报和周报是否自动发送
 AUTO_REPORT = False

@@ -599,7 +599,10 @@ def init_data(request):
                         pass
                     else:
                         print(ip,"主机不存在")
-                        models.Host.objects.create(ip=ip)
+                        if app[7]:
+                            models.Host.objects.create(ip=ip,c_room=str(int(app[7])))
+                        else:
+                            models.Host.objects.create(ip=ip)
                     g_host = models.Host.objects.get(ip=ip)
                     # g_id = models.Group.objects.filter(name=app[-1]).values('id')[0]['id']
                     obj = models.Group.objects.filter(name=app[-1]).values('id')
