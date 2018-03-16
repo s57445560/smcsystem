@@ -65,6 +65,7 @@ class Host(models.Model):
     GENDER_CROOM = (
         (u'1', u'西山机房'),
         (u'2', u'国防科技园'),
+        (u'3', u'四季青idc机房'),
     )
     Host_CHOICE = (
         (u'1', u'物理机'),
