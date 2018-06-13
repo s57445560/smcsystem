@@ -11,8 +11,14 @@ import re, os
 # 登陆装饰器
 def login_auth(func):
     def inner(request, *args, **kwargs):
-        user = request.session.get('user', None)
-        if not user:
+        obj = models.UserInfo.objects.filter(user=request.session.get('user'),token_session=request.session.get('token')).first()
+        if obj:
+            print(obj.token_session)
+            token = obj.token_session
+        else:
+            token = "99999"
+        status = request.session.exists(token)
+        if not status:
             return redirect('/login/')
         return func(request, *args, **kwargs)
     return inner

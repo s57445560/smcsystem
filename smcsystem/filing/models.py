@@ -11,6 +11,7 @@ class UserInfo(models.Model):
     user = models.CharField(verbose_name="用户名", max_length=32)
     passwd = models.CharField(verbose_name="密码", max_length=32)
     admin = models.CharField(verbose_name="状态", max_length=32, choices=USER_ROLE, default="2")
+    token_session = models.CharField(verbose_name="session", max_length=64, default="1",null=True, blank=True)
     def __str__(self):
         return self.user
 

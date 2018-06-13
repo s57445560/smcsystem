@@ -13,8 +13,14 @@ import time
 # 登陆装饰器
 def login_auth(func):
     def inner(request, *args, **kwargs):
-        user = request.session.get('user', None)
-        if not user:
+        obj = models.UserInfo.objects.filter(user=request.session.get('user'),token_session=request.session.get('token')).first()
+        if obj:
+            print(obj.token_session)
+            token = obj.token_session
+        else:
+            token = "99999"
+        status = request.session.exists(token)
+        if not status:
             return redirect('/login/')
         return func(request, *args, **kwargs)
     return inner
@@ -532,33 +538,39 @@ def command_operation(request):
 
 
 def login(request):
-    error_log = ""
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        print(username,password)
-        if username and password:
-            user_obj = models.UserInfo.objects.filter(user=username,passwd=password)
-            if user_obj:
-                role = user_obj[0].get_admin_display()
-                request.session['admin'] = role
-                request.session['user'] = user_obj[0].user
-                return redirect('/')
-
-            else:
-                error_log = "用户名或密码错误!"
-        else:
-            error_log = "用户名或密码错误!"
-    return render(request,"login.html",{'error':error_log})
-
+    error_log = ""                                                                                                                                   
+    if request.method == "POST":                                                                                                                     
+        username = request.POST.get("username")                                                                                                      
+        password = request.POST.get("password")                                                                                                      
+        print(username,password)                                                                                                                     
+        if username and password:                                                                                                                    
+            user_obj = models.UserInfo.objects.filter(user=username,passwd=password)                                                                 
+            if user_obj:                                                                                                                             
+                role = user_obj[0].get_admin_display()                                                                                               
+                request.session['admin'] = role                                                                                                      
+                request.session['user'] = user_obj[0].user                                                                                           
+                user_obj.update(token_session=request.session.session_key)                                                                           
+                request.session['token'] = request.session.session_key                                                                               
+                return redirect('/')                                                                                                                 
+                                                                                                                                                     
+            else:                                                                                                                                    
+                error_log = "用户名或密码错误!"                                                                                                      
+        else:                                                                                                                                        
+            error_log = "用户名或密码错误!"                                                                                                          
+    request.session['token'] = '9999'
+    return render(request,"login.html",{'error':error_log})  
 
 
 
 @login_auth
-def logout(request):
-    del request.session["admin"]
-    del request.session["user"]
-    return redirect('/login/')
+def logout(request):                                                                                                                                 
+    token = models.UserInfo.objects.filter(user=request.session["user"]).first()                                                                     
+    #del request.session["admin"]                                                                                                                    
+    #del request.session["user"]                                                                                                                     
+    if token:                                                                                                                                        
+        models.UserInfo.objects.filter(user=request.session["user"]).update(token_session="1")                                                       
+    request.session.delete(token.token_session)                                                                                                      
+    return redirect('/login/')                                                                                                                       
 
 
 
