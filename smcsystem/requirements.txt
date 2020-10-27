@@ -7,7 +7,7 @@ celery==4.1.0
 certifi==2017.7.27.1
 cffi==1.10.0
 chardet==3.0.4
-cryptography==2.0.3
+cryptography==3.2
 Django==1.11.4
 django-crontab==0.7.1
 gevent==1.2.2
