@@ -24,6 +24,6 @@ redis==2.10.6
 requests==2.18.4
 six==1.10.0
 tzlocal==1.4
-urllib3==1.22
+urllib3==1.26.5
 vine==1.1.4
 xlrd==1.1.0
