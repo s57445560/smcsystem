@@ -14,7 +14,7 @@ gevent==1.2.2
 greenlet==0.4.12
 idna==2.6
 kombu==4.1.0
-paramiko==2.2.1
+paramiko==2.10.1
 pyasn1==0.3.2
 pycparser==2.18
 PyMySQL==0.7.11
